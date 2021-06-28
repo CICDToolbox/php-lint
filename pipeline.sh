@@ -60,7 +60,7 @@ function install_prerequisites
 function get_version_information
 {
     VERSION=$("${INSTALL_PACKAGE}" -r 'echo substr(phpversion(),0,3);');
-    BANNER="Scanning all PHP scripts with ${INSTALL_PACKAGE} (version: ${VERSION})"
+    BANNER="Scan PHP scripts with ${INSTALL_PACKAGE} (v${VERSION})"
 }
 
 # -------------------------------------------------------------------------------- #
@@ -248,7 +248,7 @@ function setup
     export TERM=xterm
 
 #    screen_width=$(tput cols)
-    screen_width=120
+    screen_width=150
     bold="$(tput bold)"
     normal="$(tput sgr0)"
     error="$(tput setaf 1)"
