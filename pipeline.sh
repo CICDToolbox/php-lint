@@ -39,6 +39,7 @@ EXIT_VALUE=0
 
 function install_prerequisites
 {
+    draw_line
     if errors=$( ${INSTALL_COMMAND} 2>&1 ); then
         success "${INSTALL_COMMAND}"
     else
@@ -259,8 +260,8 @@ function setup
 # This is the actual 'script' and the functions/sub routines are called in order.  #
 # -------------------------------------------------------------------------------- #
 
-handle_parameters
 setup
+handle_parameters
 install_prerequisites
 header
 scan_files
