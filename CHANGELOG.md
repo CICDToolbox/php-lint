@@ -9,6 +9,8 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 - testing [`[head]`](https://github.com/CICDToolbox/php-lint/commit/)
 
+- testing [`[0166b08]`](https://github.com/CICDToolbox/php-lint/commit/0166b081f83ffdd541c47701fda002cce92bbdcc)
+
 - testing [`[1b659af]`](https://github.com/CICDToolbox/php-lint/commit/1b659af6e1eaa3640a67270af45414321452af5c)
 
 - testing [`[1f10f57]`](https://github.com/CICDToolbox/php-lint/commit/1f10f5777377b53461ed2d2c011235b05fe985d8)
