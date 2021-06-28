@@ -247,7 +247,8 @@ function setup
 {
     export TERM=xterm
 
-    screen_width=$(tput cols)
+#    screen_width=$(tput cols)
+    screen_width=120
     bold="$(tput bold)"
     normal="$(tput sgr0)"
     error="$(tput setaf 1)"
