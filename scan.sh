@@ -24,7 +24,6 @@ set -Eeuo pipefail
 # -------------------------------------------------------------------------------- #
 
 INSTALL_PACKAGE='php'
-INSTALL_COMMAND="composer require overtrue/phplint --dev"
 
 TEST_COMMAND='./vendor/bin/phplint'
 FILE_TYPE_SEARCH_PATTERN='^PHP script'
@@ -39,12 +38,6 @@ EXIT_VALUE=0
 
 function get_version_information
 {
-    if errors=$( ${INSTALL_COMMAND} 2>&1 ); then
-        success "${INSTALL_COMMAND}"
-    else
-        fail "${INSTALL_COMMAND}" "${errors}"
-    fi
-
     VERSION=$("${INSTALL_PACKAGE}" -r 'echo substr(phpversion(),0,3);');
     BANNER="Scanning all PHP scripts with ${INSTALL_PACKAGE} (version: ${VERSION})"
 }
