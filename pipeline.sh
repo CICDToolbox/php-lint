@@ -23,6 +23,9 @@ set -Eeuo pipefail
 # EXIT_VALUE - Used to store the script exit value - adjusted by the fail().       #
 # -------------------------------------------------------------------------------- #
 
+INSTALL_PACKAGE='php'
+INSTALL_COMMAND="composer require overtrue/phplint --dev"
+
 TEST_COMMAND='./vendor/bin/phplint'
 FILE_TYPE_SEARCH_PATTERN='^PHP script'
 FILE_NAME_SEARCH_PATTERN='\.php$'
@@ -36,10 +39,14 @@ EXIT_VALUE=0
 
 function get_version_information
 {
-    BINARY='php'
+    if errors=$( ${INSTALL_COMMAND} 2>&1 ); then
+        success "${INSTALL_COMMAND}"
+    else
+        fail "${INSTALL_COMMAND}" "${errors}"
+    fi
 
-    VERSION=$("${BINARY}" -r 'echo substr(phpversion(),0,3);');
-    BANNER="Scanning all PHP scripts with ${BINARY} (version: ${VERSION})"
+    VERSION=$("${INSTALL_PACKAGE}" -r 'echo substr(phpversion(),0,3);');
+    BANNER="Scanning all PHP scripts with ${INSTALL_PACKAGE} (version: ${VERSION})"
 }
 
 # -------------------------------------------------------------------------------- #
@@ -123,7 +130,7 @@ function success()
     local message="${1:-}"
 
     if [[ -n "${message}" ]]; then
-        printf ' [  %s%sOK%s  ] Processing successful for %s\n' "${bold}" "${success}" "${normal}" "${message}"
+        printf ' [  %s%sOK%s  ] Successful: %s\n' "${bold}" "${success}" "${normal}" "${message}"
     fi
 }
 
@@ -140,7 +147,7 @@ function fail()
     local errors="${2:-}"
 
     if [[ -n "${message}" ]]; then
-        printf ' [ %s%sFAIL%s ] Processing failed for %s\n' "${bold}" "${error}" "${normal}" "${message}"
+        printf ' [ %s%sFAIL%s ] Failed: %s\n' "${bold}" "${error}" "${normal}" "${message}"
     fi
 
     if [[ "${SHOW_ERRORS}" == true ]]; then
