@@ -31,6 +31,8 @@ FILE_TYPE_SEARCH_PATTERN='^PHP script'
 FILE_NAME_SEARCH_PATTERN='\.php$'
 EXIT_VALUE=0
 
+current_stage=0
+
 # -------------------------------------------------------------------------------- #
 # Install Prerequisites                                                            #
 # -------------------------------------------------------------------------------- #
@@ -39,16 +41,13 @@ EXIT_VALUE=0
 
 function install_prerequisites
 {
-    draw_line
-    center_text "${bold}Installing Prerequisites${normal}" $(( ${#bold} + ${#normal} ))
-    draw_line
+    stage "Installing Prerequisites"
 
     if errors=$( ${INSTALL_COMMAND} 2>&1 ); then
         success "${INSTALL_COMMAND}"
     else
         fail "${INSTALL_COMMAND}" "${errors}" true
-        draw_line
-        exit $EXIT_VALUE                            # Bail out as we
+#        exit $EXIT_VALUE                            # Bail out as we
     fi
 }
 
@@ -145,7 +144,7 @@ function success()
     local message="${1:-}"
 
     if [[ -n "${message}" ]]; then
-        printf ' [  %s%sOK%s  ] Successful: %s\n' "${bold}" "${success}" "${normal}" "${message}"
+        printf '[  %s%sOK%s  ] Successful: %s\n' "${bold}" "${success}" "${normal}" "${message}"
     fi
 }
 
@@ -163,7 +162,7 @@ function fail()
     local override="${3:-}"
 
     if [[ -n "${message}" ]]; then
-        printf ' [ %s%sFAIL%s ] Failed: %s\n' "${bold}" "${error}" "${normal}" "${message}"
+        printf '[ %s%sFAIL%s ] Failed: %s\n' "${bold}" "${error}" "${normal}" "${message}"
     fi
 
     if [[ "${SHOW_ERRORS}" == true ]] || [[ "${override}" == true ]] ; then
@@ -187,77 +186,55 @@ function skip()
 
     file_count=$((file_count+1))
     if [[ -n "${message}" ]]; then
-        printf ' [ %s%sSkip%s ] Skipping %s\n' "${bold}" "${skip}" "${normal}" "${message}"
+        printf '[ %s%sSkip%s ] Skipping %s\n' "${bold}" "${skipped}" "${normal}" "${message}"
     fi
 }
 
-# -------------------------------------------------------------------------------- #
-# abs                                                                              #
-# -------------------------------------------------------------------------------- #
-# Return the absolute value for a given number.                                    #
-# -------------------------------------------------------------------------------- #
-
-function abs()
+function draw_line()
 {
-    (( $1 < 0 )) && echo "$(( $1 * -1 ))" || echo "$1"
+    local start=$'\e(0' end=$'\e(B' line='qqqqqqqqqqqqqqqq'
+
+    while ((${#line} < "${screen_width}"));
+    do
+        line+="$line";
+    done
+    printf '%s%s%s\n' "$start" "${line:0:screen_width}" "$end"
 }
 
-# -------------------------------------------------------------------------------- #
-# Center Text                                                                      #
-# -------------------------------------------------------------------------------- #
-# Center the given string on the screen. Part of the report generation.            #
-# -------------------------------------------------------------------------------- #
-
-function center_text()
+function align_right()
 {
-    if [[ -n ${2-} ]]; then
-        textsize=${2}
-        extra=$(abs "$(( textsize - ${#1} ))")
-    else
-        textsize=${#1}
-        extra=0
-    fi
+    local message="${1:-}"
+    local offset="${2:-2}"
+    local width=$screen_width
 
-echo $extra
-    span=$(( ((screen_width + textsize) / 2) + extra ))
+    local textsize=${#message}
+    local start=$'\e(0' end=$'\e(B'
+    local left_line='qqqqqqqqqqqqqqqq' left_width=$(( width - (textsize + offset + 2) ))
+    local right_line='qqqqqqqqqqqqqqqq' right_width=${offset}
 
-    printf '%*s\n' "${span}" "$1"
+    while ((${#left_line} < left_width)); do left_line+="$left_line"; done
+    while ((${#right_line} < right_width)); do right_line+="$right_line"; done
+
+    printf '%s%s%s %s %s%s%s\n' "$start" "${left_line:0:left_width}" "$end" "${1}" "$start" "${right_line:0:right_width}" "$end"
 }
 
-# -------------------------------------------------------------------------------- #
-# Draw Line                                                                        #
-# -------------------------------------------------------------------------------- #
-# Draw a line on the screen. Part of the report generation.                        #
-# -------------------------------------------------------------------------------- #
-
-function draw_line
+function stage()
 {
-    printf '%*s\n' "${screen_width}" '' | tr ' ' -
+    message=${1:-}
+
+    current_stage=$((current_stage + 1))
+
+    align_right "Stage ${current_stage} - ${message}"
 }
 
-# -------------------------------------------------------------------------------- #
-# Header                                                                           #
-# -------------------------------------------------------------------------------- #
-# Draw the report header on the screen. Part of the report generation.             #
-# -------------------------------------------------------------------------------- #
-
-function header
-{
-    draw_line
-    center_text "${bold}${1}${normal}" $(( ${#bold} + ${#normal} ))
-    draw_line
-}
-
-# -------------------------------------------------------------------------------- #
-# Footer                                                                           #
 # -------------------------------------------------------------------------------- #
 # Draw the report footer on the screen. Part of the report generation.             #
 # -------------------------------------------------------------------------------- #
 
 function footer
 {
-    draw_line
-    center_text "Total: ${file_count}, OK: ${ok_count}, Failed: ${fail_count}, Skipped: $skip_count"
+    stage "Run Report"
+    printf ' Total: %s, %sOK%s: %s, %sFailed%s: %s, %sSkipped%s: %s\n' "${file_count}" "${success}" "${normal}" "${ok_count}" "${error}" "${normal}" "${fail_count}" "${skipped}" "${normal}" "${skip_count}"
     draw_line
 }
 
@@ -276,7 +253,7 @@ function setup
     normal="$(tput sgr0)"
     error="$(tput setaf 1)"
     success="$(tput setaf 2)"
-    skip="$(tput setaf 6)"
+    skipped="$(tput setaf 6)"
 
     file_count=0
     ok_count=0
@@ -294,7 +271,7 @@ setup
 handle_parameters
 install_prerequisites
 get_version_information
-header "${BANNER}"
+stage "${BANNER}"
 scan_files
 footer
 
