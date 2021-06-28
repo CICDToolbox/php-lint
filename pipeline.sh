@@ -40,7 +40,7 @@ function install_prerequisites
     composer require overtrue/phplint --dev
 
     VERSION=$("${INSTALL_PACKAGE}" -r 'echo substr(phpversion(),0,3);');
-    BANNER="Scanning all Perl scripts with ${INSTALL_PACKAGE} (version: ${VERSION})"
+    BANNER="Scanning all PHP scripts with ${INSTALL_PACKAGE} (version: ${VERSION})"
 }
 
 # -------------------------------------------------------------------------------- #
