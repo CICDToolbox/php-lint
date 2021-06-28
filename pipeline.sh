@@ -24,6 +24,7 @@ set -Eeuo pipefail
 # -------------------------------------------------------------------------------- #
 
 INSTALL_PACKAGE='php'
+INSTALL_COMMAND="composer require overtrue/phplint --dev"
 
 TEST_COMMAND='./vendor/bin/phplint'
 FILE_TYPE_SEARCH_PATTERN='^PHP script'
@@ -36,8 +37,15 @@ EXIT_VALUE=0
 # Install the required tooling.                                                    #
 # -------------------------------------------------------------------------------- #
 
-function get_version_information
+function install_prerequisites
 {
+    if errors=$( ${INSTALL_COMMAND} 2>&1 ); then
+        success "${INSTALL_COMMAND}"
+    else
+        fail "${INSTALL_COMMAND}" "${errors}" true
+        exit $EXIT_VALUE                            # Bail out as we
+    fi
+
     VERSION=$("${INSTALL_PACKAGE}" -r 'echo substr(phpversion(),0,3);');
     BANNER="Scanning all PHP scripts with ${INSTALL_PACKAGE} (version: ${VERSION})"
 }
@@ -138,12 +146,13 @@ function fail()
 {
     local message="${1:-}"
     local errors="${2:-}"
+    local override="${3:-}"
 
     if [[ -n "${message}" ]]; then
         printf ' [ %s%sFAIL%s ] Failed: %s\n' "${bold}" "${error}" "${normal}" "${message}"
     fi
 
-    if [[ "${SHOW_ERRORS}" == true ]]; then
+    if [[ "${SHOW_ERRORS}" == true ]] || [[ "${override}" == true ]] ; then
         if [[ -n "${errors}" ]]; then
             echo "${errors}"
         fi
@@ -250,10 +259,10 @@ function setup
 # This is the actual 'script' and the functions/sub routines are called in order.  #
 # -------------------------------------------------------------------------------- #
 
-setup
-get_version_information
-header
 handle_parameters
+setup
+install_prerequisites
+header
 scan_files
 footer
 

@@ -14,10 +14,8 @@ jobs:
         uses: nanasess/setup-php@master
         with:
           php-version: ${{ matrix.php }}
-      - name: Install PHP Lint
-        run: ./install.sh
       - name: Run PHP Lint
-        run: ./scan.sh
+        run: ./pipeline.sh
   awesomebot:
     name: Awesomebot tests
     runs-on: ubuntu-latest

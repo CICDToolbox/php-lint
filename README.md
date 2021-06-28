@@ -54,19 +54,15 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    - name: Install PHP Lint
-      run: wget --quiet -O - https://raw.githubusercontent.com/CICDToolbox/php-lint/master/install.sh | bash
     - name: Run PHP Lint
-      run: wget --quiet -O - https://raw.githubusercontent.com/CICDToolbox/php-lint/master/scan.sh | bash
+      run: wget --quiet -O - https://raw.githubusercontent.com/CICDToolbox/php-lint/master/pipeline.sh | bash
 ```
 
 ### Travis CI
 
 ```yml
-install:
-  - wget --quiet -O - https://raw.githubusercontent.com/CICDToolbox/php-lint/master/install.sh | bash
 script:
-  - wget --quiet -O - https://raw.githubusercontent.com/CICDToolbox/php-lint/master/scan.sh | bash
+  - wget --quiet -O - https://raw.githubusercontent.com/CICDToolbox/php-lint/master/pipeline.sh | bash
 ```
 
 ### Other Options
@@ -88,13 +84,11 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    - name: Install PHP Lint
-      run: wget --quiet -O - https://raw.githubusercontent.com/CICDToolbox/php-lint/master/install.sh | bash
     - name: Run PHP Lint
       env:
         REPORT_ONLY: true
         SHOW_ERRORS: true
-      run: wget --quiet -O - https://raw.githubusercontent.com/CICDToolbox/php-lint/master/scan.sh | bash
+      run: wget --quiet -O - https://raw.githubusercontent.com/CICDToolbox/php-lint/master/pipeline.sh | bash
 ```
 
 #### Travis CI
@@ -104,10 +98,8 @@ env:
   - REPORT_ONLY=true
   - SHOW_ERRORS=true
 
-install:
-  - wget --quiet -O - https://raw.githubusercontent.com/CICDToolbox/php-lint/master/install.sh | bash
 script:
-  - wget --quiet -O - https://raw.githubusercontent.com/CICDToolbox/php-lint/master/scan.sh | bash
+  - wget --quiet -O - https://raw.githubusercontent.com/CICDToolbox/php-lint/master/pipeline.sh | bash
 ```
 
 ## Example Output
