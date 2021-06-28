@@ -32,7 +32,7 @@ FILE_NAME_SEARCH_PATTERN='\.php$'
 EXIT_VALUE=0
 
 # -------------------------------------------------------------------------------- #
-# Install                                                                          #
+# Install Prerequisites                                                            #
 # -------------------------------------------------------------------------------- #
 # Install the required tooling.                                                    #
 # -------------------------------------------------------------------------------- #
@@ -40,13 +40,26 @@ EXIT_VALUE=0
 function install_prerequisites
 {
     draw_line
+    center_text "${bold}Installing Prerequisites${normal}" $(( ${#bold} + ${#normal} ))
+    draw_line
+
     if errors=$( ${INSTALL_COMMAND} 2>&1 ); then
         success "${INSTALL_COMMAND}"
     else
         fail "${INSTALL_COMMAND}" "${errors}" true
+        draw_line
         exit $EXIT_VALUE                            # Bail out as we
     fi
+}
 
+# -------------------------------------------------------------------------------- #
+# Install                                                                          #
+# -------------------------------------------------------------------------------- #
+# Install the required tooling.                                                    #
+# -------------------------------------------------------------------------------- #
+
+function get_version_information
+{
     VERSION=$("${INSTALL_PACKAGE}" -r 'echo substr(phpversion(),0,3);');
     BANNER="Scanning all PHP scripts with ${INSTALL_PACKAGE} (version: ${VERSION})"
 }
@@ -179,6 +192,17 @@ function skip()
 }
 
 # -------------------------------------------------------------------------------- #
+# abs                                                                              #
+# -------------------------------------------------------------------------------- #
+# Return the absolute value for a given number.                                    #
+# -------------------------------------------------------------------------------- #
+
+function abs()
+{
+    [[ $[ $@ ] -lt 0 ]] && echo "$[ ($@) * -1 ]" || echo "$[ $@ ]"
+}
+
+# -------------------------------------------------------------------------------- #
 # Center Text                                                                      #
 # -------------------------------------------------------------------------------- #
 # Center the given string on the screen. Part of the report generation.            #
@@ -186,12 +210,17 @@ function skip()
 
 function center_text()
 {
-    local message="${1:-}"
+    if [[ -n ${2} ]]; then
+        textsize=${2}
+        extra=$(abs "$(( textsize - ${#1} ))")
+    else
+        textsize=${#1}
+        extra=0
+    fi
 
-    textsize=${#message}
-    span=$(((screen_width + textsize) / 2))
+    span=$(( (("${screen_width}" + textsize) / 2) + ${extra} ))
 
-    printf '%*s\n' "${span}" "${message}"
+    printf '%*s\n' "${span}" "$1"
 }
 
 # -------------------------------------------------------------------------------- #
@@ -214,7 +243,7 @@ function draw_line
 function header
 {
     draw_line
-    center_text "${BANNER}"
+    center_text "${bold}${1}${normal}" $(( ${#bold} + ${#normal} ))
     draw_line
 }
 
@@ -263,7 +292,8 @@ function setup
 setup
 handle_parameters
 install_prerequisites
-header
+get_version_information
+header "${BANNER}"
 scan_files
 footer
 
