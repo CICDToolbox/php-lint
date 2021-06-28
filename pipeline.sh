@@ -199,7 +199,7 @@ function skip()
 
 function abs()
 {
-    [[ $[ $@ ] -lt 0 ]] && echo "$[ ($@) * -1 ]" || echo "$[ $@ ]"
+    (( $1 < 0 )) && echo "$(( $1 * -1 ))" || echo "$1"
 }
 
 # -------------------------------------------------------------------------------- #
@@ -210,7 +210,7 @@ function abs()
 
 function center_text()
 {
-    if [[ -n ${2} ]]; then
+    if [[ -n ${2-} ]]; then
         textsize=${2}
         extra=$(abs "$(( textsize - ${#1} ))")
     else
@@ -218,7 +218,7 @@ function center_text()
         extra=0
     fi
 
-    span=$(( (("${screen_width}" + textsize) / 2) + ${extra} ))
+    span=$(( ((screen_width + textsize) / 2) + extra ))
 
     printf '%*s\n' "${span}" "$1"
 }
