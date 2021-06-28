@@ -218,6 +218,7 @@ function center_text()
         extra=0
     fi
 
+echo $extra
     span=$(( ((screen_width + textsize) / 2) + extra ))
 
     printf '%*s\n' "${span}" "$1"
