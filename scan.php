@@ -23,7 +23,6 @@ set -Eeuo pipefail
 # EXIT_VALUE - Used to store the script exit value - adjusted by the fail().       #
 # -------------------------------------------------------------------------------- #
 
-INSTALL_PACKAGE='php'
 TEST_COMMAND='./vendor/bin/phplint'
 FILE_TYPE_SEARCH_PATTERN='^PHP script'
 FILE_NAME_SEARCH_PATTERN='\.php$'
@@ -35,12 +34,12 @@ EXIT_VALUE=0
 # Install the required tooling.                                                    #
 # -------------------------------------------------------------------------------- #
 
-function install_prerequisites
+function get_version_information
 {
-    composer require overtrue/phplint --dev
+    BINARY='php'
 
-    VERSION=$("${INSTALL_PACKAGE}" -r 'echo substr(phpversion(),0,3);');
-    BANNER="Scanning all PHP scripts with ${INSTALL_PACKAGE} (version: ${VERSION})"
+    VERSION=$("${BINARY}" -r 'echo substr(phpversion(),0,3);');
+    BANNER="Scanning all PHP scripts with ${BINARY} (version: ${VERSION})"
 }
 
 # -------------------------------------------------------------------------------- #
@@ -252,7 +251,7 @@ function setup
 # -------------------------------------------------------------------------------- #
 
 setup
-install_prerequisites
+get_version_information
 header
 handle_parameters
 scan_files
