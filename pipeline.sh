@@ -190,15 +190,15 @@ function skip()
     fi
 }
 
-function draw_line()
-{
-    local start=$'\e(0' end=$'\e(B' line='qqqqqqqqqqqqqqqq'
+# -------------------------------------------------------------------------------- #
+# Draw Line                                                                        #
+# -------------------------------------------------------------------------------- #
+# Draw a line on the screen. Part of the report generation.                        #
+# -------------------------------------------------------------------------------- #
 
-    while ((${#line} < "${screen_width}"));
-    do
-        line+="$line";
-    done
-    printf '%s%s%s\n' "$start" "${line:0:screen_width}" "$end"
+function draw_line
+{
+    printf '%*s\n' "${screen_width}" '' | tr ' ' -
 }
 
 function align_right()
@@ -208,14 +208,13 @@ function align_right()
     local width=$screen_width
 
     local textsize=${#message}
-    local start=$'\e(0' end=$'\e(B'
-    local left_line='qqqqqqqqqqqqqqqq' left_width=$(( width - (textsize + offset + 2) ))
-    local right_line='qqqqqqqqqqqqqqqq' right_width=${offset}
+    local left_line='-' left_width=$(( width - (textsize + offset + 2) ))
+    local right_line='-' right_width=${offset}
 
     while ((${#left_line} < left_width)); do left_line+="$left_line"; done
     while ((${#right_line} < right_width)); do right_line+="$right_line"; done
 
-    printf '%s%s%s %s %s%s%s\n' "$start" "${left_line:0:left_width}" "$end" "${1}" "$start" "${right_line:0:right_width}" "$end"
+    printf '%s %s %s\n' "${left_line:0:left_width}" "${1}" "${right_line:0:right_width}"
 }
 
 function stage()
