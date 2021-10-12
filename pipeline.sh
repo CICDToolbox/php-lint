@@ -29,9 +29,9 @@ INSTALL_COMMAND="composer require overtrue/phplint --dev"
 TEST_COMMAND='./vendor/bin/phplint'
 FILE_TYPE_SEARCH_PATTERN='^PHP script'
 FILE_NAME_SEARCH_PATTERN='\.php$'
-EXIT_VALUE=0
 
-current_stage=0
+EXIT_VALUE=0
+CURRENT_STAGE=0
 
 # -------------------------------------------------------------------------------- #
 # Install Prerequisites                                                            #
@@ -43,11 +43,16 @@ function install_prerequisites
 {
     stage "Installing Prerequisites"
 
-    if errors=$( ${INSTALL_COMMAND} 2>&1 ); then
-        success "${INSTALL_COMMAND}"
+    if ! command -v ${TEST_COMMAND} &> /dev/null
+    then
+        if errors=$( ${INSTALL_COMMAND} 2>&1 ); then
+            success "${INSTALL_COMMAND}"
+        else
+            fail "${INSTALL_COMMAND}" "${errors}" true
+            exit $EXIT_VALUE
+        fi
     else
-        fail "${INSTALL_COMMAND}" "${errors}" true
-#        exit $EXIT_VALUE                            # Bail out as we
+        success "${TEST_COMMAND} is alredy installed"
     fi
 }
 
@@ -60,7 +65,7 @@ function install_prerequisites
 function get_version_information
 {
     VERSION=$("${INSTALL_PACKAGE}" -r 'echo substr(phpversion(),0,3);');
-    BANNER="Scan PHP scripts with ${INSTALL_PACKAGE} (v${VERSION})"
+    BANNER="Run ${INSTALL_PACKAGE} (v${VERSION})"
 }
 
 # -------------------------------------------------------------------------------- #
@@ -86,6 +91,24 @@ function check()
 }
 
 # -------------------------------------------------------------------------------- #
+# Is Excluded                                                                      #
+# -------------------------------------------------------------------------------- #
+# Check to see if the filename is in the exclude_list.                             #
+# -------------------------------------------------------------------------------- #
+
+function is_excluded()
+{
+    local needle=$1
+
+    for i in "${exclude_list[@]}"; do
+        if [[ $i == "${needle}" ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+# -------------------------------------------------------------------------------- #
 # Scan Files                                                                       #
 # -------------------------------------------------------------------------------- #
 # Locate all of the relevant files within the repo and process compatible ones.    #
@@ -95,10 +118,15 @@ function scan_files()
 {
     while IFS= read -r filename
     do
-        if file -b "${filename}" | grep -qE "${FILE_TYPE_SEARCH_PATTERN}"; then
-            check "${filename}"
-        elif [[ "${filename}" =~ ${FILE_NAME_SEARCH_PATTERN} ]]; then
-            check "${filename}"
+        if is_excluded "${filename}"; then
+            skip "${filename}"
+            skip_count=$((skip_count+1))
+        else
+            if file -b "${filename}" | grep -qE "${FILE_TYPE_SEARCH_PATTERN}"; then
+                check "${filename}"
+            elif [[ "${filename}" =~ ${FILE_NAME_SEARCH_PATTERN} ]]; then
+                check "${filename}"
+            fi
         fi
     done < <(git ls-files | sort -zVd)
 }
@@ -111,25 +139,37 @@ function scan_files()
 
 function handle_parameters
 {
-    if [[ -n "${SHOW_ERRORS-}" ]]; then
-        if [[ "${SHOW_ERRORS}" != true ]]; then
-            SHOW_ERRORS=false
-        fi
-    else
-        SHOW_ERRORS=false
-    fi
+    local parameters=false
 
-    if [[ -n "${REPORT_ONLY-}" ]]; then
-        if [[ "${REPORT_ONLY}" != true ]]; then
-            REPORT_ONLY=false
-        fi
+    stage "Parameters"
+
+    if [[ -n "${REPORT_ONLY-}" ]] && [[ "${REPORT_ONLY}" = true ]]; then
+        REPORT_ONLY=true
+        echo " Report Only: true"
+        parameters=true
     else
         REPORT_ONLY=false
     fi
 
-    if [[ "${REPORT_ONLY}" == true ]]; then
-        center_text "WARNING: REPORT ONLY MODE"
-        draw_line
+    if [[ -n "${SHOW_ERRORS-}" ]] && [[ "${SHOW_ERRORS}" = true ]]; then
+        SHOW_ERRORS=true
+        echo " Show Errors: true"
+        parameters=true
+    else
+        SHOW_ERRORS=false
+    fi
+
+    if [[ -n "${EXCLUDE_FILES-}" ]]; then
+        IFS=',' read -r -a exclude_list <<< "${EXCLUDE_FILES}"
+        echo " Excluded: ${EXCLUDE_FILES}"
+        parameters=true
+    else
+        # shellcheck disable=SC2034
+        declare -a exclude_list=()
+    fi
+
+    if [[ "${parameters}" != true ]]; then
+        echo " No parameters given"
     fi
 }
 
