@@ -144,7 +144,7 @@ function success()
     local message="${1:-}"
 
     if [[ -n "${message}" ]]; then
-        printf '[  %s%sOK%s  ] Successful: %s\n' "${bold}" "${success}" "${normal}" "${message}"
+        printf '[  %s%sOK%s  ] %s\n' "${bold}" "${success}" "${normal}" "${message}"
     fi
 }
 
@@ -162,7 +162,7 @@ function fail()
     local override="${3:-}"
 
     if [[ -n "${message}" ]]; then
-        printf '[ %s%sFAIL%s ] Failed: %s\n' "${bold}" "${error}" "${normal}" "${message}"
+        printf '[ %s%sFAIL%s ] %s\n' "${bold}" "${error}" "${normal}" "${message}"
     fi
 
     if [[ "${SHOW_ERRORS}" == true ]] || [[ "${override}" == true ]] ; then
@@ -186,7 +186,7 @@ function skip()
 
     file_count=$((file_count+1))
     if [[ -n "${message}" ]]; then
-        printf '[ %s%sSkip%s ] Skipping %s\n' "${bold}" "${skipped}" "${normal}" "${message}"
+        printf '[ %s%sSkip%s ] %s\n' "${bold}" "${skipped}" "${normal}" "${message}"
     fi
 }
 
@@ -200,6 +200,12 @@ function draw_line
 {
     printf '%*s\n' "${screen_width}" '' | tr ' ' -
 }
+
+# -------------------------------------------------------------------------------- #
+# Align Right                                                                      #
+# -------------------------------------------------------------------------------- #
+# Draw text alined to the right hand side of the screen.                           #
+# -------------------------------------------------------------------------------- #
 
 function align_right()
 {
@@ -216,6 +222,12 @@ function align_right()
 
     printf '%s %s %s\n' "${left_line:0:left_width}" "${1}" "${right_line:0:right_width}"
 }
+
+# -------------------------------------------------------------------------------- #
+# Stage                                                                            #
+# -------------------------------------------------------------------------------- #
+# Set the current stage number and display the message.                            #
+# -------------------------------------------------------------------------------- #
 
 function stage()
 {

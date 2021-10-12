@@ -7,7 +7,9 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 ### [Unreleased](https://github.com/CICDToolbox/php-lint/commits/master)
 
-- testing [`[head]`](https://github.com/CICDToolbox/php-lint/commit/)
+- update [`[head]`](https://github.com/CICDToolbox/php-lint/commit/)
+
+- testing [`[741bc90]`](https://github.com/CICDToolbox/php-lint/commit/741bc90ca54feb33a979ce61f55fbf8b3b20a5e7)
 
 - testing [`[d014767]`](https://github.com/CICDToolbox/php-lint/commit/d014767001696c9ae58909f54db3a8f4e75448f4)
 
