@@ -273,9 +273,9 @@ function stage()
 {
     message=${1:-}
 
-    current_stage=$((current_stage + 1))
+    CURRENT_STAGE=$((CURRENT_STAGE + 1))
 
-    align_right "Stage ${current_stage} - ${message}"
+    align_right "Stage ${CURRENT_STAGE} - ${message}"
 }
 
 # -------------------------------------------------------------------------------- #
