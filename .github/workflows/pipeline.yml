@@ -16,7 +16,7 @@ jobs:
           php-version: ${{ matrix.php }}
       - name: Run PHP Lint
         env:
-          EXCLUDE_FILES: "vendor/"
+          EXCLUDE_FILES: "vendor/.*"
         run: ./pipeline.sh
   awesomebot:
     name: Awesomebot
