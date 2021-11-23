@@ -7,7 +7,9 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 ### [Unreleased](https://github.com/CICDToolbox/php-lint/commits/master)
 
-- shellcheck [`[head]`](https://github.com/CICDToolbox/php-lint/commit/)
+- Fix find command [`[head]`](https://github.com/CICDToolbox/php-lint/commit/)
+
+- shellcheck [`[94e3b2c]`](https://github.com/CICDToolbox/php-lint/commit/94e3b2c1dd39c92aa793cead7e8fa023b1d5ff01)
 
 - shellcheck [`[97a2bc9]`](https://github.com/CICDToolbox/php-lint/commit/97a2bc9e9e36813a73c8e2123cfdda6d35303249)
 
