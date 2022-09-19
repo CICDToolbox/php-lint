@@ -7,7 +7,9 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 ### [Unreleased](https://github.com/CICDToolbox/php-lint/commits/master)
 
-- Fix find command [`[head]`](https://github.com/CICDToolbox/php-lint/commit/)
+- Make errors easier to see and default to showing errors [`[head]`](https://github.com/CICDToolbox/php-lint/commit/)
+
+- Fix find command [`[0cebe1d]`](https://github.com/CICDToolbox/php-lint/commit/0cebe1d8a5cfe85a72cc9c366a3448d063ec2d8d)
 
 - Fix find command [`[05b5d66]`](https://github.com/CICDToolbox/php-lint/commit/05b5d66a6e12ae9598ae08098ad0dfd9d300970f)
 
