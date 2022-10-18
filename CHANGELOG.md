@@ -7,7 +7,9 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 ### [Unreleased](https://github.com/CICDToolbox/php-lint/commits/master)
 
-- Make errors easier to see and default to showing errors [`[head]`](https://github.com/CICDToolbox/php-lint/commit/)
+- Change the logic for skipping and showing skipped files [`[head]`](https://github.com/CICDToolbox/php-lint/commit/)
+
+- Make errors easier to see and default to showing errors [`[cddbfba]`](https://github.com/CICDToolbox/php-lint/commit/cddbfba13385861c1544c0ba4503ad94b8427508)
 
 - Fix find command [`[0cebe1d]`](https://github.com/CICDToolbox/php-lint/commit/0cebe1d8a5cfe85a72cc9c366a3448d063ec2d8d)
 

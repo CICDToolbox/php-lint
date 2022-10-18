@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [ '7.3', '7.4', '8' ]
+        php: [ '8', '8.1' ]
     name: Build Test on PHP ${{ matrix.php }}
     steps:
       - uses: actions/checkout@v2
