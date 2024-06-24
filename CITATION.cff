@@ -3,8 +3,8 @@ message: If you use this software, please cite it using these metadata.
 title: PHP Lint
 abstract: A tool to lint your PHP code with php-lint.
 type: software
-version: 0.1.0
-date-released: 2024-05-22
+version: 0.1.1
+date-released: 2024-06-24
 repository-code: https://github.com/CICDToolbox/php-lint
 keywords:
   - "Wolf Software"
